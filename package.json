@@ -1,0 +1,25 @@
+{
+  "name": "track-your-employees-c12",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Morgan1317/Track-your-employees-C12.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Morgan1317/Track-your-employees-C12/issues"
+  },
+  "homepage": "https://github.com/Morgan1317/Track-your-employees-C12#readme",
+  "dependencies": {
+    "console.table": "^0.10.0",
+    "inquirer": "^8.2.4"
+  }
+}
