@@ -18,14 +18,15 @@ CREATE TABLE roles (
 );
 
 CREATE TABLE employee (
-  employee_id INTEGER AUTO_INCREMENT PRIMARY KEY,
+  id INTEGER AUTO_INCREMENT PRIMARY KEY,
   first_name VARCHAR(30) NOT NULL,
   last_name VARCHAR(30) NOT NULL,
 --   link role to table role id 
   role_id INTEGER,
   CONSTRAINT fk_role FOREIGN KEY (role_id) REFERENCES roles(id),
---   COME BACK TO THIS SO IT WILL BE SET TO NULL IF EMPLOYEE HAS NO MANAGER
 -- should link to employee id holds ref to manager of this employee id 
-  manager_id INTEGER
+-- self reference 
+  manager_id INTEGER,
+  CONSTRAINT fk_manager FOREIGN KEY (manager_id) REFERENCES employee(id)
 );
 
