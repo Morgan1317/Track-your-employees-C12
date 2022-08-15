@@ -26,6 +26,11 @@ ON emp.role_id = roles.id
 JOIN department
 ON roles.department_id = department.id`;
 
-module.exports = {allDept, allRoles, allEmp};
+const addEmp = `INSERT INTO employee(first_name, last_name,role_id, manager_id)
+VALUES`
+
+const theRoleChoice = `SELECT roles.title FROM roles`;
+
+module.exports = {allDept, allRoles, allEmp, addEmp, theRoleChoice};
 
 
