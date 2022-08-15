@@ -1,40 +1,72 @@
 const mysql = require('mysql2');
-const db = require('./db/connection');
-// connect to database
 const cTable = require('console.table');
+// connect to database
+const db = require('./db/connection');
+// connect to query inputs
+const  {allDept, allRoles, allEmp} = require('./query');
+const inquirer= require('inquirer');
+const { getMaxListeners } = require('./db/connection');
 
-// view all departments
-db.query(`SELECT * FROM department`, (err,rows) => {
-  console.table(['id', 'department'], rows);
-});
 
+function manageCompany (){
+  inquirer.prompt([
+    {
+      type: 'list',
+      name: 'whatToDo',
+      message: 'What would you like to do?',
+      choices: ['View All Employees',
+      'Add Employee',
+      'Update Employee Role',
+      'View All Roles',
+      'Add Role',
+      'View All Departments',
+      'Add Departments',
+      'Quit']
+    }
+  ])
+  .then(({ whatToDo }) => {
+      ourChoice(whatToDo);
+  });
+};
 
-// view all roles
-db.query(`SELECT roles.id, roles.title,department.department_name
-AS department,
-roles.salary
-FROM roles
-LEFT JOIN department
-ON roles.department_id = department.id`, (err, rows) => {
-  console.table(['id', 'title', 'department', 'salary'],rows);
-});
+function ourChoice(whatToDo){
+  switch(whatToDo){
+    case 'View All Employees':
+       sql = allEmp;
+       break;
+    case 'Add Employee':
+      console.log('Add Employee');
+      break; 
+    case 'Update Employee Role':
+      console.log('Update Employee Role');
+      break; 
+    case 'View All Roles':
+      sql = allRoles;
+      break; 
+    case 'Add Role':
+      console.log('Add Role');
+      break; 
+    case 'View All Departments':
+      sql = allDept; 
+      break; 
+    case 'Add Departments':
+      console.log('Add Departments');
+      break;
+    default:
+      db.end();
+  }
+  return runCommand(sql);
+}
 
-// view all employees
-db.query(`SELECT emp.id, emp.first_name, emp.last_name, 
-roles.title
-AS title,
-department.department_name
-AS department,
-roles.salary
-AS salary,
-CONCAT (man.first_name,' ', man.last_name) 
-AS manager
-FROM employee emp
-LEFT JOIN employee man ON emp.manager_id = man.id
-JOIN roles
-ON emp.role_id = roles.id
-JOIN department
-ON roles.department_id = department.id`, (err, rows) => {
-  console.table(['id', 'title', 'department', 'salary','manager'],rows);
-});
+function runCommand(sql){
+  db.query(sql, (err,rows) =>{
+    if(err){
+      console.log(err.message)
+    };
+    console.table(rows);
+    manageCompany();
+  });
+};
+
+manageCompany();
 
