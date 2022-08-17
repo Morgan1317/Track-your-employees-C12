@@ -44,7 +44,9 @@ const departments = `SELECT * FROM department `
 const addDept = `INSERT INTO department(department_name)
 VALUES(?)`
 
+updateRole = `UPDATE employee SET role_id = ?
+WHERE id = ?`
 
-module.exports = {allDept, allRoles, allEmp, addEmp, theRoleChoice, addRoles, departments, addDept};
+module.exports = {allDept, allRoles, allEmp, addEmp, theRoleChoice, addRoles, departments, addDept, updateRole};
 
 

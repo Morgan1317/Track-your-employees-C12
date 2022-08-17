@@ -3,7 +3,7 @@ const cTable = require('console.table');
 // connect to database
 const db = require('./db/connection');
 // connect to query inputs
-const  {allDept, allRoles, allEmp, addEmp, theRoleChoice, addRoles, departments, addDept} = require('./query');
+const  {allDept, allRoles, allEmp, addEmp, theRoleChoice, addRoles, departments, addDept, updateRole} = require('./query');
 const inquirer = require('inquirer');
 
 
@@ -37,8 +37,7 @@ function ourChoice(whatToDo){
     case 'Add Employee':
       return addEmployee();
     case 'Update Employee Role':
-      console.log('Update Employee Role');
-      break; 
+      return updateEmployee();
     case 'View All Roles':
       sql = allRoles;
       return runCommand(sql);
@@ -174,17 +173,63 @@ function addDepartments(){
       message:'What is the name of the department you wish to add?'
     }
   ])
-  .then(newDept => {
-    const deptName = newDept.deptName
+  .then(deptName => {
     db.query(addDept, deptName, (err,rows) => {
       if(err){
         console.log(err.message);
       }
-      runCommand(allRoles)
-    })
-  })
-}
+      runCommand(allDept)
+    });
+  });
+};
 
+function updateEmployee(){
+  db.query(allEmp, (err,res) =>{
+    if(err){
+      console.log(err.message)
+    }
+    const empList = res.map(({id, first_name, last_name}) => ({ name: first_name + " " + last_name, value: id}));  
+    inquirer.prompt([
+      {
+        type: 'list',
+        name: 'empId',
+        message: 'Which employee do you wish to update?',
+        choices: empList
+      },
+    ])
+    .then (updatedEmp =>{
+      const empId = [updatedEmp.empId]
+      console.log(empId)
+      db.query(theRoleChoice, (err,rows) =>{
+        if(err){
+          console.log(err.message);
+        }
+        // map roles from the database by title and id and then use them as the choices in the prompt, so they stay updated with what is in the database
+        const roles = rows.map(({ title, id }) => ({  name: title, value: id }));
+        inquirer.prompt([
+          {
+            type: 'list',
+            name: 'empRoleId',
+            message: 'What is the employees new role?',
+            choices: roles
+          }
+        ])
+        .then(theEmpRole =>{
+          const empRoleId = theEmpRole.empRoleId;
+          empId.push(empRoleId);
+          reversed = empId.reverse();
+          console.log(reversed)
+            db.query(updateRole, reversed, (err,data) =>{
+            if(err){
+              console.log(err.message);
+            }
+            runCommand(allEmp)
+          })
+        })
+      })
+    })  
+  })
+};
 
 function runCommand(sql){
   db.query(sql, (err,rows) =>{
