@@ -39,7 +39,12 @@ const theRoleChoice = `SELECT * FROM roles`;
 
 const departments = `SELECT * FROM department `
 
+// add departments
 
-module.exports = {allDept, allRoles, allEmp, addEmp, theRoleChoice, addRoles, departments};
+const addDept = `INSERT INTO department(department_name)
+VALUES(?)`
+
+
+module.exports = {allDept, allRoles, allEmp, addEmp, theRoleChoice, addRoles, departments, addDept};
 
 

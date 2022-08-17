@@ -3,7 +3,7 @@ const cTable = require('console.table');
 // connect to database
 const db = require('./db/connection');
 // connect to query inputs
-const  {allDept, allRoles, allEmp, addEmp, theRoleChoice, addRoles, departments} = require('./query');
+const  {allDept, allRoles, allEmp, addEmp, theRoleChoice, addRoles, departments, addDept} = require('./query');
 const inquirer = require('inquirer');
 
 
@@ -48,8 +48,7 @@ function ourChoice(whatToDo){
       sql = allDept; 
       return runCommand(sql); 
     case 'Add Departments':
-      console.log('Add Departments');
-      break;
+      addDepartments();
     default:
       db.end();
   }
@@ -152,7 +151,7 @@ function addRole(){
           choices: depts
         }
       ])
-      .then(theChosenRole =>{
+      .then(theChosenRole => {
         const deptId = theChosenRole.deptId;
         newRole.push(deptId);
           // add the new employee with its params, to add to current list of employees, and add to table. 
@@ -160,9 +159,28 @@ function addRole(){
             if (err){
               console.log(err.message)
             }
-            runCommand(allRoles);
+            runCommand(allRoles)
           })
       })
+    })
+  })
+}
+
+function addDepartments(){
+  inquirer.prompt([
+    {
+      type: 'input',
+      name:'deptName',
+      message:'What is the name of the department you wish to add?'
+    }
+  ])
+  .then(newDept => {
+    const deptName = newDept.deptName
+    db.query(addDept, deptName, (err,rows) => {
+      if(err){
+        console.log(err.message);
+      }
+      runCommand(allRoles)
     })
   })
 }
