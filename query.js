@@ -27,16 +27,19 @@ JOIN department
 ON roles.department_id = department.id`;
 
 // add to employees table
-const addEmp = `INSERT INTO employee(first_name, last_name,role_id, manager_id)
+const addEmp = `INSERT INTO employee(first_name, last_name ,role_id , manager_id)
 VALUES (?,?,?,?)`
 
-// get role options
-const theRoleChoice = `SELECT roles.title FROM roles`;
+const addRoles = `INSERT INTO roles(title, salary, department_id)
+VALUES (?,?,?)` 
 
-const getManagers = `SELECT CONCAT(employee.first_name, ' ', employee.last_name) AS manager
-FROM employee`
+// get role options from table
+const theRoleChoice = `SELECT * FROM roles`;
 
 
-module.exports = {allDept, allRoles, allEmp, addEmp, theRoleChoice, getManagers};
+const departments = `SELECT * FROM department `
+
+
+module.exports = {allDept, allRoles, allEmp, addEmp, theRoleChoice, addRoles, departments};
 
 

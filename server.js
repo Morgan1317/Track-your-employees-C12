@@ -3,7 +3,7 @@ const cTable = require('console.table');
 // connect to database
 const db = require('./db/connection');
 // connect to query inputs
-const  {allDept, allRoles, allEmp, addEmp, theRoleChoice, getManagers} = require('./query');
+const  {allDept, allRoles, allEmp, addEmp, theRoleChoice, addRoles, departments} = require('./query');
 const inquirer = require('inquirer');
 
 
@@ -43,8 +43,7 @@ function ourChoice(whatToDo){
       sql = allRoles;
       return runCommand(sql);
     case 'Add Role':
-      console.log('Add Role');
-      break; 
+      return addRole();
     case 'View All Departments':
       sql = allDept; 
       return runCommand(sql); 
@@ -76,25 +75,97 @@ function addEmployee(){
         console.log(err.message);
       }
       // map roles from the database by title and id and then use them as the choices in the prompt, so they stay updated with what is in the database
-      const roles = rows.map(({ title }) => ({  name: title }));
+      const roles = rows.map(({ title, id }) => ({  name: title, value: id }));
       inquirer.prompt([
         {
           type: 'list',
-          name: 'empRole',
+          name: 'empRoleId',
           message: 'What is the employees role?',
           choices: roles
         }
       ])
-        // once we have selected the role, push this selected role to the new employee array
-      .then(empRole =>{
-        const newEmpRole = empRole.role;
-        newEmpAdd.push(newEmpRole);
-        // add employees manager if the employee has one. Need to map to list of imployees. 
-        runCommand(allEmp);
+        // once we have selected the role, push this selected roles associated id to the new employee array
+      .then(theEmpRole =>{
+        const empRoleId = theEmpRole.empRoleId;
+        newEmpAdd.push(empRoleId);
+        // add employees manager if the employee has one. Need to map to list of employees. 
+        db.query(allEmp, (err, mans) => {
+          if (err){
+            console.log(err);
+          }
+          // name is concat to match with how we previously show the manager
+          const manList = mans.map(({first_name, last_name, id}) => ({ name: first_name + " " + last_name, value: id}))
+          inquirer.prompt([
+            {
+              type: 'list',
+              name: 'potManagerId',
+              message: 'Who is the employees Manager?',
+              choices: manList
+            }
+          ])
+          .then(potManager => {
+            // grab managers id from the decision and push to employee array
+            const potManagerId = potManager.potManagerId;
+            newEmpAdd.push(potManagerId);
+
+            // add the new employee with its params, to add to current list of employees, and add to table. 
+            db.query(addEmp, newEmpAdd, (err,rows) => {
+              if (err){
+                console.log(err.message)
+              }
+              runCommand(allEmp);
+            })
+          })
+        })
       })
     })
   })
 };
+
+function addRole(){
+  inquirer.prompt([
+    {
+      type: 'input',
+      name: 'roleName',
+      message: 'What is the role called?',
+    },
+    {
+      type: 'input',
+      name: 'roleSalary',
+      message: 'What is the Salary?'
+    }
+  ])
+  .then (res =>{
+    const newRole = [res.roleName, res.roleSalary]
+    db.query(departments, (err,dept) =>{
+      if(err){
+        console.log(err.message);
+      }
+
+      // map departments from database by name and id
+      const depts = dept.map(({ id, department_name}) =>({name: department_name, value:id}));
+      inquirer.prompt([
+        {
+          type: 'list',
+          name: 'deptId',
+          message: 'What department does the role belong in?',
+          choices: depts
+        }
+      ])
+      .then(theChosenRole =>{
+        const deptId = theChosenRole.deptId;
+        newRole.push(deptId);
+          // add the new employee with its params, to add to current list of employees, and add to table. 
+          db.query(addRoles, newRole, (err,rows) => {
+            if (err){
+              console.log(err.message)
+            }
+            runCommand(allRoles);
+          })
+      })
+    })
+  })
+}
 
 
 function runCommand(sql){
