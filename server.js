@@ -203,7 +203,6 @@ function updateEmployee(){
     .then (updatedEmp =>{
       // initialize params array for the updated employee 
       const empId = [updatedEmp.empId]
-      console.log(empId)
       db.query(theRoleChoice, (err,rows) =>{
         if(err){
           console.log(err.message);
@@ -222,8 +221,8 @@ function updateEmployee(){
           // push role id to the params, so it knows the new role id that it needs to be changed to
           const empRoleId = theEmpRole.empRoleId;
           empId.push(empRoleId);
+          // reverse array so params are in correct order
           reversed = empId.reverse();
-          console.log(reversed)
             db.query(updateRole, reversed, (err,data) =>{
             if(err){
               console.log(err.message);
