@@ -38,7 +38,7 @@
   There are no test files for this project
   ~~~
 
-  To see how it works click <a href="https://drive.google.com/file/d/18esc-N-7gjKTnJ1tw4PnPDxZY7Mys9eM/view" target="_blank" rel="noreferrer noopener">here</a>
+  To see how it works click <a href="https://watch.screencastify.com/v/C3JuBafr4KmDlv6AnXNm" target="_blank" rel="noreferrer noopener">here</a>
 
   ## Questions
 
