@@ -9,6 +9,7 @@ const inquirer = require('inquirer');
 
 
 function manageCompany (){
+  // prompt users for what they want to do. 
   inquirer.prompt([
     {
       type: 'list',
@@ -29,6 +30,7 @@ function manageCompany (){
   });
 };
 
+// send to function depending on user input
 function ourChoice(whatToDo){
   switch(whatToDo){
     case 'View All Employees':
@@ -49,7 +51,7 @@ function ourChoice(whatToDo){
     case 'Add Departments':
       return addDepartments();
     default:
-      db.end();
+      return db.end();
   }
 }
 
@@ -67,6 +69,7 @@ function addEmployee(){
     }
   ])
   .then(res =>{
+    // create employee array that will be used in the query params 
     const newEmpAdd = [res.empFirst, res.empLast]
     db.query(theRoleChoice, (err,rows) =>{
       if(err){
@@ -134,6 +137,7 @@ function addRole(){
     }
   ])
   .then (res =>{
+    // creates role array that will be used for params in query 
     const newRole = [res.roleName, res.roleSalary]
     db.query(departments, (err,dept) =>{
       if(err){
@@ -151,6 +155,7 @@ function addRole(){
         }
       ])
       .then(theChosenRole => {
+        // push department id into the params array 
         const deptId = theChosenRole.deptId;
         newRole.push(deptId);
           // add the new employee with its params, to add to current list of employees, and add to table. 
@@ -174,8 +179,7 @@ function addDepartments(){
     }
   ])
   .then(({deptName}) => {
-    console.log(addDept)
-    console.log(deptName)
+    // grab the deptartment id, and input into query params 
     db.query(addDept, deptName, (err,rows) => {
       if(err){
         console.log(err);
@@ -200,6 +204,7 @@ function updateEmployee(){
       },
     ])
     .then (updatedEmp =>{
+      // initialize params array for the updated employee 
       const empId = [updatedEmp.empId]
       console.log(empId)
       db.query(theRoleChoice, (err,rows) =>{
@@ -217,6 +222,7 @@ function updateEmployee(){
           }
         ])
         .then(theEmpRole =>{
+          // push role id to the params, so it knows the new role id that it needs to be changed to
           const empRoleId = theEmpRole.empRoleId;
           empId.push(empRoleId);
           reversed = empId.reverse();
@@ -234,7 +240,7 @@ function updateEmployee(){
 };
 
 function runCommand(sql){
-  console.log(sql)
+  // runs query based on sql response given in different functions
   db.query(sql, (err,rows) =>{
     
     if(!sql){

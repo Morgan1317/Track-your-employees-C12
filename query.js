@@ -30,21 +30,22 @@ ON roles.department_id = department.id`;
 const addEmp = `INSERT INTO employee(first_name, last_name ,role_id , manager_id)
 VALUES (?,?,?,?)`
 
+// add role into roles table
 const addRoles = `INSERT INTO roles(title, salary, department_id)
 VALUES (?,?,?)` 
 
 // get role options from table
 const theRoleChoice = `SELECT * FROM roles`;
 
-
+// get department info
 const departments = `SELECT * FROM department `
 
 // add departments
-
 const addDept = `INSERT INTO department(department_name)
 VALUES(?)`
 
-updateRole = `UPDATE employee SET role_id = ?
+// update role, by resetting its id, associated with the employee of users choice
+const updateRole = `UPDATE employee SET role_id = ?
 WHERE id = ?`
 
 module.exports = {allDept, allRoles, allEmp, addEmp, theRoleChoice, addRoles, departments, addDept, updateRole};
