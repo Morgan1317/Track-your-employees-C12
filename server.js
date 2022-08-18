@@ -47,7 +47,7 @@ function ourChoice(whatToDo){
       sql = allDept; 
       return runCommand(sql); 
     case 'Add Departments':
-      addDepartments();
+      return addDepartments();
     default:
       db.end();
   }
@@ -173,10 +173,12 @@ function addDepartments(){
       message:'What is the name of the department you wish to add?'
     }
   ])
-  .then(deptName => {
+  .then(({deptName}) => {
+    console.log(addDept)
+    console.log(deptName)
     db.query(addDept, deptName, (err,rows) => {
       if(err){
-        console.log(err.message);
+        console.log(err);
       }
       runCommand(allDept)
     });
@@ -232,7 +234,9 @@ function updateEmployee(){
 };
 
 function runCommand(sql){
+  console.log(sql)
   db.query(sql, (err,rows) =>{
+    
     if(!sql){
       manageCompany();
     } 
