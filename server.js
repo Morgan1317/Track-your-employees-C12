@@ -1,12 +1,9 @@
-
 const cTable = require('console.table');
 // connect to database
 const db = require('./db/connection');
 // connect to query inputs
-const  {allDept, allRoles, allEmp, addEmp, theRoleChoice, addRoles, departments, addDept, updateRole} = require('./query');
+const  {allDept, allRoles, allEmp, addEmp, theRoleChoice, addRoles, addDept, updateRole} = require('./query');
 const inquirer = require('inquirer');
-
-
 
 function manageCompany (){
   // prompt users for what they want to do. 
@@ -139,7 +136,7 @@ function addRole(){
   .then (res =>{
     // creates role array that will be used for params in query 
     const newRole = [res.roleName, res.roleSalary]
-    db.query(departments, (err,dept) =>{
+    db.query(allDept, (err,dept) =>{
       if(err){
         console.log(err.message);
       }

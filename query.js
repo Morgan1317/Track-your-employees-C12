@@ -37,9 +37,6 @@ VALUES (?,?,?)`
 // get role options from table
 const theRoleChoice = `SELECT * FROM roles`;
 
-// get department info
-const departments = `SELECT * FROM department `
-
 // add departments
 const addDept = `INSERT INTO department(department_name)
 VALUES(?)`
@@ -48,6 +45,6 @@ VALUES(?)`
 const updateRole = `UPDATE employee SET role_id = ?
 WHERE id = ?`
 
-module.exports = {allDept, allRoles, allEmp, addEmp, theRoleChoice, addRoles, departments, addDept, updateRole};
+module.exports = {allDept, allRoles, allEmp, addEmp, theRoleChoice, addRoles, addDept, updateRole};
 
 
